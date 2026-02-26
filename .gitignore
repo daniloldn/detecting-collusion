@@ -9,3 +9,4 @@ data/processed/
 reports/figures/
 *.log
 .DS_Store
+.vscode/
