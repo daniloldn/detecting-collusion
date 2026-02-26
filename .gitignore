@@ -13,3 +13,5 @@ reports/figures/
 .vscode/
 *.csv
 outputs/
+data/interim_syn
+data/processed_syn
