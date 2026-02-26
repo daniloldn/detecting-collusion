@@ -12,3 +12,4 @@ reports/figures/
 .DS_Store
 .vscode/
 *.csv
+outputs/

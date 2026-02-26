@@ -1,0 +1,35 @@
+# configs/tier0.yaml
+
+simulation:
+  T: 180
+  burn_in: 24
+  n_markets: 200
+  seed: 42
+
+cost_process:
+  rho_c_low: 0.6
+  rho_c_high: 0.95
+  sigma_c_low: 0.01
+  sigma_c_high: 0.08
+  jump_prob_low: 0.01
+  jump_prob_high: 0.05
+  sigma_J_low: 0.05
+  sigma_J_high: 0.20
+
+price_noise:
+  sigma_p_low: 0.001
+  sigma_p_high: 0.02
+
+regime_parameters:
+  beta_C: [0.8, 1.2]
+  beta_T: [0.5, 0.9]
+  beta_K: [0.2, 0.6]
+
+  kappa_C: [0.4, 0.9]
+  kappa_T: [0.2, 0.6]
+  kappa_K: [0.05, 0.35]
+
+markov:
+  stay_C: 0.97
+  stay_T: 0.97
+  stay_K: 0.985
