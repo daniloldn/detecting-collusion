@@ -15,7 +15,7 @@ def main():
 
     for w in (18, 24, 36):
         win_df = make_windows(df, window=w)
-        win_df.to_parquet(f"data/processed/synth_tier0_windows_L{w}.parquet")
+        win_df.to_parquet(f"data/processed_syn/synth_dgp0_windows_L{w}.parquet")
 
 
 if __name__ == "__main__":
