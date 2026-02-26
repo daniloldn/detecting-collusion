@@ -5,6 +5,7 @@ __pycache__/
 .env
 data/raw_data/
 data/interim/
+data/cartel_data
 data/processed/
 reports/figures/
 *.log
