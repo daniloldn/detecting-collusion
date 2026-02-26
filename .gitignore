@@ -3,10 +3,11 @@ __pycache__/
 .ipynb_checkpoints/
 .venv/
 .env
-data/raw/
+data/raw_data/
 data/interim/
 data/processed/
 reports/figures/
 *.log
 .DS_Store
 .vscode/
+*.csv
