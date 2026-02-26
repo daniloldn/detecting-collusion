@@ -25,3 +25,11 @@ def storing_data(data_dict: dict, filename: str = "clean_data.pkl") -> Path:
         with file_path.open("wb") as fh:
             pickle.dump(data_dict, fh)
         return file_path
+
+
+def storing_data_merged(data: pd.DataFrame, filename: str = "processed_data.csv") -> Path:
+
+        DATA_DIR_2.mkdir(parents=True, exist_ok=True)
+        file_path = DATA_DIR_2 / filename
+        data.to_csv(file_path, index=False)
+        return file_path

@@ -75,7 +75,7 @@ def load_pickle(file_name:str):
     #create intervals
     first_key = next(iter(data))
     intervals = []
-    window = 7
+    window = 18
     for start in range(len(data[first_key]) - window):
         intervals.append(list(range(start, start + window)))
 
