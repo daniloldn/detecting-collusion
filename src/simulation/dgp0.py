@@ -163,6 +163,12 @@ def simulate_market_series(
     # Sample market-specific parameters (heterogeneity across markets)
     params = sample_market_params(rng, cfg, mode=mode)
 
+    #sanity check
+    if market_id == 0:
+        print(f"\nMode: {mode}")
+        print("beta:", params["beta"])
+        print("kappa:", params["kappa"])
+
     # Simulate a bit longer then discard burn-in to avoid start-at-zero artifacts
     T_total = cfg.burn_in + cfg.T
 
