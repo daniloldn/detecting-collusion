@@ -58,7 +58,7 @@ def _sample_uniform(rng: np.random.Generator, low: float, high: float) -> float:
     return float(rng.uniform(low, high))
 
 
-def sample_market_params(rng: np.random.Generator, cfg: Tier0Config) -> Dict:
+def sample_market_params(rng: np.random.Generator, cfg: Tier0Config, mode: str = "baseline") -> Dict:
     """
     Sample one market's structural parameters.
 
@@ -87,6 +87,18 @@ def sample_market_params(rng: np.random.Generator, cfg: Tier0Config) -> Dict:
         "T": _sample_uniform(rng, *cfg.kappa_T),
         "K": _sample_uniform(rng, *cfg.kappa_K),
     }
+
+      # --- Stress test overrides ---
+    if mode == "kappa_only":
+        beta_fixed = beta["C"]
+        beta = {"C": beta_fixed, "T": beta_fixed, "K": beta_fixed}
+
+    elif mode == "beta_only":
+        kappa_fixed = kappa["C"]
+        kappa = {"C": kappa_fixed, "T": kappa_fixed, "K": kappa_fixed}
+
+    elif mode != "baseline":
+        raise ValueError(f"Unknown stress test mode: {mode}")
 
     return dict(
         rho_c=rho_c,
