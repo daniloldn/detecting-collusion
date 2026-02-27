@@ -1,5 +1,6 @@
 import plotly.graph_objects as go
 import pandas as pd
+import numpy as np
 
 def plot_market_plotly(df: pd.DataFrame, market_id: int = 0):
     d = df[df["market_id"] == market_id].copy()
@@ -67,3 +68,10 @@ def plot_market_plotly(df: pd.DataFrame, market_id: int = 0):
     )
 
     fig.show()
+
+
+def separation_auc_like(scores_C, scores_K, n=10000, seed=0):
+    rng = np.random.default_rng(seed)
+    C = rng.choice(scores_C, size=n, replace=True)
+    K = rng.choice(scores_K, size=n, replace=True)
+    return float(np.mean(K > C))
