@@ -149,6 +149,7 @@ def simulate_market_series(
     rng: np.random.Generator,
     cfg: Tier0Config,
     market_id: int,
+    mode: str = "baseline"
 ) -> pd.DataFrame:
     """
     Simulate one market's monthly log price series under Tier 0 DGP.
@@ -160,7 +161,7 @@ def simulate_market_series(
     This lets you later form windows and evaluate whether the model detects transitions.
     """
     # Sample market-specific parameters (heterogeneity across markets)
-    params = sample_market_params(rng, cfg)
+    params = sample_market_params(rng, cfg, mode=mode)
 
     # Simulate a bit longer then discard burn-in to avoid start-at-zero artifacts
     T_total = cfg.burn_in + cfg.T
@@ -215,10 +216,10 @@ def simulate_market_series(
     return df
 
 
-def simulate_panel(cfg: Tier0Config, n_markets: int, seed: int = 0) -> pd.DataFrame:
+def simulate_panel(cfg: Tier0Config, n_markets: int, seed: int = 0, mode:str="baseline") -> pd.DataFrame:
     """
     Simulate many markets and stack into one DataFrame.
     """
     rng = np.random.default_rng(seed)
-    dfs = [simulate_market_series(rng, cfg, m) for m in range(n_markets)]
+    dfs = [simulate_market_series(rng, cfg, m, mode=mode) for m in range(n_markets)]
     return pd.concat(dfs, axis=0, ignore_index=True)

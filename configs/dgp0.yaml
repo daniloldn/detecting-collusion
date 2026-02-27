@@ -1,8 +1,5 @@
 # configs/tier0.yaml
 
-stress_test:
-  mode: "beta_only"
-
 simulation:
   T: 180
   burn_in: 24
