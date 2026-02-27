@@ -11,11 +11,13 @@ if str(PROJECT_ROOT) not in sys.path:
 from src.simulation.windows.windows import make_windows_multi, make_windows
 
 def main():
-    df = pd.read_parquet("data/interim_syn/synth_dgp0_series.parquet")
 
-    for w in (18, 24, 36):
-        win_df = make_windows(df, window=w)
-        win_df.to_parquet(f"data/processed_syn/synth_dgp0_windows_L{w}.parquet")
+    for mode in ["baseline", "kappa_only", "beta_only"]:
+        df = pd.read_parquet(f"data/interim_syn/synth_dgp0_series_{mode}.parquet")
+        
+        for w in (18, 24, 36):
+            win_df = make_windows(df, window=w)
+            win_df.to_parquet(f"data/processed_syn/synth_dgp0_{mode}_L{w}.parquet")
 
 
 if __name__ == "__main__":
