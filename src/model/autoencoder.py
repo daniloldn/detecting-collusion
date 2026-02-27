@@ -9,12 +9,12 @@ from tensorflow.keras.models import Model
 class PriceAutoencoder(Model):
     """Autoencoder for tabular price vectors (default: six economic features)."""
 
-    def __init__(self, input_dim=6, latent_dim=2, hidden_dims=(32, 16)):
+    def __init__(self, input_dim=6, latent_dim=2, hidden_dims=(32, 16), latent_activation= None):
         super().__init__()
         encoder_layers = [layers.Input(shape=(input_dim,))]
         for units in hidden_dims:
             encoder_layers.append(layers.Dense(units, activation='relu'))
-        encoder_layers.append(layers.Dense(latent_dim, activation='relu'))
+        encoder_layers.append(layers.Dense(latent_dim, activation=latent_activation))
         self.encoder = tf.keras.Sequential(encoder_layers)
 
         decoder_layers = [layers.Input(shape=(latent_dim,))]
