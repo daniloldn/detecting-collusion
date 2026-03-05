@@ -88,6 +88,8 @@ def sample_market_params(rng: np.random.Generator, cfg: Tier0Config, mode: str =
         "K": _sample_uniform(rng, *cfg.kappa_K),
     }
 
+    mu_c = 0.0
+
       # --- Stress test overrides ---
     if mode == "kappa_only":
         beta_fixed = beta["C"]
@@ -110,6 +112,16 @@ def sample_market_params(rng: np.random.Generator, cfg: Tier0Config, mode: str =
         jump_prob = min(jump_prob, 0.002)
         sigma_J = min(sigma_J, 0.03)
 
+  
+    
+    elif mode == "trend_fundamentals":
+        beta_fixed = beta["C"]
+        kappa_fixed = kappa["C"]
+        beta = {"C": beta_fixed, "T": beta_fixed, "K": beta_fixed}
+        kappa = {"C": kappa_fixed, "T": kappa_fixed, "K": kappa_fixed}
+
+        mu_c = 0.002
+
     elif mode != "baseline":
         raise ValueError(f"Unknown stress test mode: {mode}")
 
@@ -121,6 +133,7 @@ def sample_market_params(rng: np.random.Generator, cfg: Tier0Config, mode: str =
         sigma_p=sigma_p,
         beta=beta,
         kappa=kappa,
+         mu_c=mu_c, 
     )
 
 
@@ -196,7 +209,13 @@ def simulate_market_series(
         # occasional large jump shock
         jump = rng.normal(0.0, params["sigma_J"]) if rng.random() < params["jump_prob"] else 0.0
         # AR(1) persistence
-        c[t] = params["rho_c"] * c[t - 1] + u + jump
+
+        if mode == "trend_fundamentals":
+            c[t] = params["rho_c"] * c[t - 1] + params["mu_c"] + u + jump
+        else:
+            c[t] = params["rho_c"] * c[t - 1] + u + jump
+
+
 
     # 3) price process p_t
     p = np.zeros(T_total, dtype=float)

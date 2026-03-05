@@ -25,7 +25,7 @@ def main():
     L = 18
 
     base_model = run_dir(experiment, seed, mode)
-    base_feat = run_dir(experiment, seed, "calm_fundamentals")
+    base_feat = run_dir(experiment, seed, "trend_fundamentals")
 
     # Load features
     feat_path = base_feat / "data" / "features" / f"features_L{L}.parquet"

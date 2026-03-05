@@ -22,7 +22,7 @@ def main():
     seed = raw_cfg["simulation"]["seed"]
 
     mode_1 = "baseline"
-    mode_2 = "calm_fundamentals"
+    mode_2 = "trend_fundamentals"
     
     L = 18
 
@@ -111,7 +111,7 @@ def main():
     fig_hist.add_histogram(
     x=df1["conduct_score_centered"],
     nbinsx=70,
-    name="Calm fundamentals",
+    name="trend fundamentals",
     marker_color="blue",
     opacity=0.35
     )

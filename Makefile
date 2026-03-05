@@ -1,12 +1,19 @@
-.PHONY: preprocess windows feature 
+PYTHON := /c/Users/danil/anaconda3/envs/vdcol/python.exe
+.PHONY: preprocess windows feature scoring false
 
 preprocess:
-	python src/simulation/run_dgp0.py
+	$(PYTHON) src/simulation/run_dgp0.py
 
 windows:
-	python src/simulation/windows/run_window.py
+	$(PYTHON) src/simulation/windows/run_window.py
 
 feature:
-	python src/data/run_feature.py
+	$(PYTHON) src/data/run_feature.py
+
+scoring:
+	$(PYTHON) src/scoring/run_scoring.py
+
+false:
+	$(PYTHON) src/scoring/fp_calmf.py
 
 all: preprocess windows feature

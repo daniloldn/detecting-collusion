@@ -18,7 +18,7 @@ def main():
 
     experiment = "dgp0"
 
-    for mode in ["baseline", "kappa_only", "beta_only", "calm_fundamentals"]:
+    for mode in ["baseline", "kappa_only", "beta_only", "calm_fundamentals", "trend_fundamentals"]:
         base = run_dir(experiment, seed, mode)
 
         # read series from the run folder

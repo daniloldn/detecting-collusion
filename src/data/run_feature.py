@@ -14,7 +14,7 @@ def main():
     seed = raw_cfg["simulation"]["seed"]
     experiment = "dgp0"
 
-    for mode in ["baseline", "kappa_only", "beta_only", "calm_fundamentals"]:
+    for mode in ["baseline", "kappa_only", "beta_only", "calm_fundamentals", "trend_fundamentals"]:
         base = run_dir(experiment, seed, mode)
         win_dir = base / "data" / "windows"
         feat_dir = base / "data" / "features"
