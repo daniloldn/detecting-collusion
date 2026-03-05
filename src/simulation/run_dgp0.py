@@ -7,6 +7,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from src.utils.config import load_tier0_config
 from src.simulation.dgp0 import simulate_panel
+from src.utils.paths import run_dir
 
 
 
