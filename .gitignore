@@ -16,3 +16,4 @@ outputs/
 data/interim_syn
 data/processed_syn
 runs/
+detecting_collusion.egg-info/
