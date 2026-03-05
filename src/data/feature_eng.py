@@ -48,12 +48,9 @@ def feature_eng_syn(df: pd.DataFrame) -> pd.DataFrame:
 
     out["mean_change"] = rets.mean(axis=1)
     out["volatility"] = rets.std(axis=1, ddof=0) 
-    
 
     eps = 1e-6
 
-
-   
     out["CoV_change"] = out["volatility"] / (out["mean_change"].abs() + eps)
 
     # “near zero” change fraction (rigidity proxy) — tune threshold later
@@ -78,5 +75,4 @@ def feature_eng_syn(df: pd.DataFrame) -> pd.DataFrame:
     #price range
     out["price_range"] = out[price_cols].max(axis=1) - out[price_cols].min(axis=1)
  
-
     return out
