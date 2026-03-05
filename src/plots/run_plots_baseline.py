@@ -21,13 +21,22 @@ def main():
     _, raw_cfg = load_tier0_config("configs/dgp0.yaml")
     seed = raw_cfg["simulation"]["seed"]
 
-    mode = "baseline"
+    mode_1 = "baseline"
+    mode_2 = "calm_fundamentals"
+    
     L = 18
 
-    base = run_dir(experiment, seed, mode)
+    base = run_dir(experiment, seed, mode_1)
     df = pd.read_parquet(base / "scoring" / f"scoring_L{L}.parquet")
 
-    figs_dir = base / "figs"
+    base_1 = run_dir(experiment, seed, mode_2)
+    df1 = pd.read_parquet(base_1 / "scoring" / f"scoring_L{L}.parquet")
+
+    # thresholds from baseline
+    tau95 = 2.268063545227051
+    tau99 = 3.7468080520629883
+
+    figs_dir = base_1 / "figs"
     figs_dir.mkdir(parents=True, exist_ok=True)
 
     # --- Plot 1: Latent space (subsample pure) + centroids + axis ---
@@ -97,6 +106,30 @@ def main():
         barmode="overlay",
         title="Centered Conduct Score Distribution by Regime",
         template="plotly_white",
+    )
+
+    fig_hist.add_histogram(
+    x=df1["conduct_score_centered"],
+    nbinsx=70,
+    name="Calm fundamentals",
+    marker_color="blue",
+    opacity=0.35
+    )
+
+    fig_hist.add_vline(
+    x=tau95,
+    line_dash="dash",
+    line_color="black",
+    annotation_text="τ95",
+    annotation_position="top"
+    )
+
+    fig_hist.add_vline(
+    x=tau99,
+    line_dash="dash",
+    line_color="black",
+    annotation_text="τ95",
+    annotation_position="top"
     )
 
     hist_path = figs_dir / f"score_distribution_L{L}.png"
