@@ -18,7 +18,7 @@ def main():
     _, raw_cfg = load_tier0_config("configs/dgp0.yaml")
     seed = raw_cfg["simulation"]["seed"]
 
-    mode = "baseline"
+    mode = "calm_fundamentals"
     L = 18
 
     base = run_dir(experiment, seed, mode)

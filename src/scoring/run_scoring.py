@@ -24,14 +24,15 @@ def main():
     mode = "baseline"
     L = 18
 
-    base = run_dir(experiment, seed, mode)
+    base_model = run_dir(experiment, seed, mode)
+    base_feat = run_dir(experiment, seed, "calm_fundamentals")
 
     # Load features
-    feat_path = base / "data" / "features" / f"features_L{L}.parquet"
+    feat_path = base_feat / "data" / "features" / f"features_L{L}.parquet"
     df = pd.read_parquet(feat_path).dropna(subset=FEATURES_5).copy()
 
     # Load scaler + encoder
-    model_dir = base / "model"
+    model_dir = base_model / "model"
     scaler = joblib.load(model_dir / f"scaler_L{L}.pkl")
     encoder = keras.models.load_model(model_dir / f"encoder_L{L}.keras")
 
@@ -52,7 +53,7 @@ def main():
     df["conduct_score_centered"] = score_centered(Z2, mu_C, v_hat)
 
     # Save artifacts
-    score_dir = base / "scoring"
+    score_dir = base_feat / "scoring"
     score_dir.mkdir(parents=True, exist_ok=True)
 
     df.to_parquet(score_dir / f"scoring_L{L}.parquet", index=False)

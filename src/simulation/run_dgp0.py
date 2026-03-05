@@ -21,7 +21,7 @@ def main():
     experiment = "dgp0"
 
     
-    for mode in ["baseline", "kappa_only", "beta_only"]:
+    for mode in ["baseline", "kappa_only", "beta_only", "calm_fundamentals"]:
         df = simulate_panel(cfg, n_markets=n_markets, seed=seed, mode=mode)
         out_dir = run_dir(experiment, seed, mode) / "data"
         out_dir.mkdir(parents=True, exist_ok=True)

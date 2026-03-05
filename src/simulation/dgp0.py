@@ -96,6 +96,19 @@ def sample_market_params(rng: np.random.Generator, cfg: Tier0Config, mode: str =
     elif mode == "beta_only":
         kappa_fixed = kappa["C"]
         kappa = {"C": kappa_fixed, "T": kappa_fixed, "K": kappa_fixed}
+    
+    elif mode == "calm_fundamentals":
+         # Competitive conduct everywhere
+        beta_fixed = beta["C"]
+        kappa_fixed = kappa["C"]
+         
+        beta = {"C": beta_fixed, "T": beta_fixed, "K": beta_fixed}
+        kappa = {"C": kappa_fixed, "T": kappa_fixed, "K": kappa_fixed}
+
+        # Calm cost process
+        sigma_c = min(sigma_c, 0.005)
+        jump_prob = min(jump_prob, 0.002)
+        sigma_J = min(sigma_J, 0.03)
 
     elif mode != "baseline":
         raise ValueError(f"Unknown stress test mode: {mode}")
