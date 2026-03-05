@@ -15,6 +15,7 @@ from src.utils.config import load_tier0_config
 
 STATE_MAP = {0: "Competitive", 1: "Tacit", 2: "Cartel"}
 COLORS = {"Competitive": "green", "Tacit": "orange", "Cartel": "red"}
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 def main():
     experiment = "dgp0"
@@ -29,14 +30,16 @@ def main():
     base = run_dir(experiment, seed, mode_1)
     df = pd.read_parquet(base / "scoring" / f"scoring_L{L}.parquet")
 
-    base_1 = run_dir(experiment, seed, mode_2)
-    df1 = pd.read_parquet(base_1 / "scoring" / f"scoring_L{L}.parquet")
+    #base = run_dir(experiment, seed, mode_1)
+    #df = pd.read_parquet(base / "scoring" / f"scoring_L{L}.parquet")
+    base_1 = PROJECT_ROOT / "data" / "processed_real" / f"real_scored_L{L}.parquet"
+    df1= pd.read_parquet(base_1)
 
     # thresholds from baseline
     tau95 = 2.268063545227051
     tau99 = 3.7468080520629883
 
-    figs_dir = base_1 / "figs"
+    figs_dir = base / "figs"
     figs_dir.mkdir(parents=True, exist_ok=True)
 
     # --- Plot 1: Latent space (subsample pure) + centroids + axis ---
@@ -111,7 +114,7 @@ def main():
     fig_hist.add_histogram(
     x=df1["conduct_score_centered"],
     nbinsx=70,
-    name="trend fundamentals",
+    name="real markets",
     marker_color="blue",
     opacity=0.35
     )
@@ -128,7 +131,7 @@ def main():
     x=tau99,
     line_dash="dash",
     line_color="black",
-    annotation_text="τ95",
+    annotation_text="τ99",
     annotation_position="top"
     )
 

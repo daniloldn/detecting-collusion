@@ -194,6 +194,7 @@ def simulate_market_series(
         print(f"\nMode: {mode}")
         print("beta:", params["beta"])
         print("kappa:", params["kappa"])
+        print("mu_c:",params["mu_c"] )
 
     # Simulate a bit longer then discard burn-in to avoid start-at-zero artifacts
     T_total = cfg.burn_in + cfg.T

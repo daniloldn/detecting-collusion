@@ -42,6 +42,7 @@ def feature_eng_syn(df: pd.DataFrame) -> pd.DataFrame:
     )
 
     out[price_cols] = out[price_cols].apply(pd.to_numeric, errors="coerce")
+    out[price_cols] = np.log(out[price_cols])
 
     # log returns across months within each window
     rets = out[price_cols].diff(axis=1).iloc[:, 1:]  # drop first NaN
