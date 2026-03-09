@@ -27,7 +27,7 @@ def main():
     base_model = run_dir(experiment, seed, mode)
 
     # Load features
-    score_path = base_model / "data" / "features" / f"features_L{L}.parquet"
+    score_path = base_model / "scoring" / f"scoring_L{L}.parquet"
     df = pd.read_parquet(score_path).copy()
 
     #tau
@@ -42,6 +42,15 @@ def main():
 
     print(market_eval.head())
 
+    # Save screening
+    screen_dir = base_model / "screen"
+    screen_dir.mkdir(parents=True, exist_ok=True)
+
+    market_eval.to_parquet(screen_dir / f"screen_L{L}.parquet", index=False)
+
  
 
     return None
+
+if __name__ == "__main__":
+    main()
