@@ -21,11 +21,11 @@ def main():
     _, raw_cfg = load_tier0_config("configs/dgp0.yaml")
     seed = raw_cfg["simulation"]["seed"]
 
-    mode = "baseline"
+    mode = "kappa_only"
     L = 18
 
     base_model = run_dir(experiment, seed, mode)
-    base_feat = run_dir(experiment, seed, "trend_fundamentals")
+    base_feat = run_dir(experiment, seed, "kappa_only")
 
     # Load features
     feat_path = base_feat / "data" / "features" / f"features_L{L}.parquet"

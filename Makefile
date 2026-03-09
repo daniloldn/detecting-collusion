@@ -1,5 +1,5 @@
 PYTHON := /c/Users/danil/anaconda3/envs/vdcol/python.exe
-.PHONY: preprocess windows feature scoring false
+.PHONY: preprocess windows feature scoring false train
 
 preprocess:
 	$(PYTHON) src/simulation/run_dgp0.py
@@ -15,5 +15,9 @@ scoring:
 
 false:
 	$(PYTHON) src/scoring/fp_calmf.py
+
+train:
+	$(PYTHON) src/model/train_ae.py
+
 
 all: preprocess windows feature

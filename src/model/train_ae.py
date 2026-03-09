@@ -28,7 +28,7 @@ def main():
     seed = raw_cfg["simulation"]["seed"]
     set_global_seed(seed)
 
-    mode = "baseline"
+    mode = "kappa_only"
     L = 18
 
     base = run_dir(experiment, seed, mode)
