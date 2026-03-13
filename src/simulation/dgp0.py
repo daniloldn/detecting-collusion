@@ -255,7 +255,7 @@ def simulate_market_series(
     return df, params
 
 
-def simulate_panel(cfg: Tier0Config, n_markets: int, seed: int = 0, mode:str="baseline") -> pd.DataFrame:
+def simulate_panel(cfg: Tier0Config, n_markets: int, seed: int = 42, mode:str="baseline") -> pd.DataFrame:
     """
     Simulate many markets and stack into one DataFrame.
     """
