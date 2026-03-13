@@ -24,7 +24,7 @@ def compute_market_metrics(df: pd.DataFrame, tau95: float, tau99: float, time_co
     """
     rows = []
 
-    for market_id, g in df.groupby("market_id"):
+    for market_id, g in df.groupby("Name"): #name for real, market_id for synthetic
         g = g.sort_values(time_col).copy()
 
         scores = g["conduct_score_centered"]
