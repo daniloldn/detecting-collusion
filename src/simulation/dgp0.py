@@ -252,7 +252,7 @@ def simulate_market_series(
 
     # Save params for debugging (not stored in parquet, but useful while prototyping)
     df.attrs["params"] = params
-    return df
+    return df, params
 
 
 def simulate_panel(cfg: Tier0Config, n_markets: int, seed: int = 0, mode:str="baseline") -> pd.DataFrame:
@@ -260,5 +260,24 @@ def simulate_panel(cfg: Tier0Config, n_markets: int, seed: int = 0, mode:str="ba
     Simulate many markets and stack into one DataFrame.
     """
     rng = np.random.default_rng(seed)
-    dfs = [simulate_market_series(rng, cfg, m, mode=mode) for m in range(n_markets)]
-    return pd.concat(dfs, axis=0, ignore_index=True)
+    dfs = []
+    param_rows = []
+
+    for m in range(n_markets):
+        df_m, params = simulate_market_series(rng, cfg, m, mode=mode)
+        dfs.append(df_m)
+
+        param_rows.append({
+            "market_id": m,
+            "beta_C": params["beta"]["C"],
+            "beta_T": params["beta"]["T"],
+            "beta_K": params["beta"]["K"],
+            "kappa_C": params["kappa"]["C"],
+            "kappa_T": params["kappa"]["T"],
+            "kappa_K": params["kappa"]["K"],
+        })
+
+    panel = pd.concat(dfs, axis=0, ignore_index=True)
+    params_df = pd.DataFrame(param_rows)
+
+    return panel, params_df

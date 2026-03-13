@@ -68,3 +68,16 @@ def compute_market_truth(df: pd.DataFrame, time_col: str) -> pd.DataFrame:
         })
 
     return pd.DataFrame(rows)
+
+def compute_structural_intensity(params_df: pd.DataFrame) -> pd.DataFrame:
+    out = params_df.copy()
+
+    eps = 1e-12
+
+    out["structural_intensity"] = (
+        (out["beta_C"] - out["beta_K"]) / (out["beta_C"] + eps)
+        +
+        (out["kappa_C"] - out["kappa_K"]) / (out["kappa_C"] + eps)
+    )
+
+    return out[["market_id", "structural_intensity"]]

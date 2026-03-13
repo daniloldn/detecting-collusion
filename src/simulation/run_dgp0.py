@@ -22,12 +22,13 @@ def main():
 
     
     for mode in ["baseline", "kappa_only", "beta_only", "calm_fundamentals", "trend_fundamentals"]:
-        df = simulate_panel(cfg, n_markets=n_markets, seed=seed, mode=mode)
+        df, params_df = simulate_panel(cfg, n_markets=n_markets, seed=seed, mode=mode)
         out_dir = run_dir(experiment, seed, mode) / "data"
         out_dir.mkdir(parents=True, exist_ok=True)
 
         out = out_dir / "series.parquet"
         df.to_parquet(out, index=False)
+        params_df.to_parquet(out_dir / "market_params.parquet", index=False)
         print("Saved:", out, df.shape)
 
 if __name__ == "__main__":
