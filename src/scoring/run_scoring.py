@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import joblib
 from tensorflow import keras
+from sklearn.metrics import roc_auc_score
 
 import sys
 from pathlib import Path
@@ -13,7 +14,7 @@ if str(PROJECT_ROOT) not in sys.path:
 from src.utils.paths import run_dir
 from src.utils.config import load_tier0_config
 from src.scoring.conduct_axis import compute_centroids, compute_axis, score_centered
-from src.model.autoencoder import PriceAutoencoder
+
 
 FEATURES_5 = ["volatility", "zero_change_fraction", "max_abs_ret", "AR_1", "price_range"]
 
@@ -32,8 +33,8 @@ def main():
     # Load features
     feat_path = base_feat / "data" / "features" / f"features_L{L}.parquet"
     #df = pd.read_parquet(feat_path).dropna(subset=FEATURES_5).copy()
-    path = Path("data/processed/real_processed_18.csv")
-    df = pd.read_csv(path).dropna(subset=FEATURES_5).copy()
+    path = Path("data/cartel_data/feature/features.parquet")
+    df = pd.read_parquet(path).dropna(subset=FEATURES_5).copy()
 
     # Load scaler + encoder
     model_dir = base_model / "model"
@@ -70,12 +71,17 @@ def main():
 
     df["conduct_score_centered"] = score_centered(Z2, mu_C, v_hat)
 
+    df["cartel_share"] = df["share_K"]
+    df["cartel_window"] = (df["share_K"] >= 0.5).astype(int)
+    df["pure_cartel_window"] = (df["share_K"] >= 0.8).astype(int)
+
+    
     
 
     # Save artifacts
     #score_dir = base_feat / "scoring"
     #score_dir.mkdir(parents=True, exist_ok=True)
-    score_dir = Path("data/processed_real")
+    score_dir = Path("data/cartel_data/score")
     score_dir.mkdir(parents=True, exist_ok=True)
 
    
@@ -100,25 +106,45 @@ def main():
     df["score_outside99"] = df["conduct_score_centered"] > tau99
 
 
-    df["high_score_in_manifold"] = (
-    (df["conduct_score_centered"] > tau95) &
+    df["cartel_and_in_manifold"] = (
+    (df["cartel_window"] == 1) &
     (df["recon_error"] <= recon_tau95)
     )
 
-    df["high_score_out_of_manifold"] = (
+    df["high_score_and_cartel"] = (
     (df["conduct_score_centered"] > tau95) &
-    (df["recon_error"] > recon_tau95)
+    (df["cartel_window"] == 1)
     )
+
 
     for j, col in enumerate(FEATURES_5):
         df[f"recon_sqerr_{col}"] = (Xs[:, j] - Xhat[:, j]) ** 2
 
 
+    print("\nValidation summaries")
+
+    print("\nMean conduct score by cartel_window:")
+    print(df.groupby("cartel_window")["conduct_score_centered"].mean())
+
+    print("\nShare above tau95 by cartel_window:")
+    print((df["conduct_score_centered"] > tau95).groupby(df["cartel_window"]).mean())
+
+    print("\nMean reconstruction error by cartel_window:")
+    print(df.groupby("cartel_window")["recon_error"].mean())
+
+    print("\nSpearman correlation with cartel share:")
+    print(df["conduct_score_centered"].corr(df["cartel_share"], method="spearman"))
+
+    try:
+        print("\nAUC for cartel_window:")
+        print(roc_auc_score(df["cartel_window"], df["conduct_score_centered"]))
+    except Exception as e:
+        print("AUC failed:", e)
 
     #np.save(score_dir / f"recon_tau95_L{L}.npy", recon_tau95)
     #np.save(score_dir / f"recon_tau99_L{L}.npy", recon_tau99)
 
-    df.to_parquet(score_dir / f"scoring_L{L}.parquet", index=False)
+    df.to_parquet(score_dir / f"cartel_scoring_L{L}.parquet", index=False)
 
     print("Saved scoring artifacts in:", score_dir)
     print(f"Recon error thresholds: tau95={recon_tau95:.6f}, tau99={recon_tau99:.6f}")
