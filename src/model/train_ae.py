@@ -28,7 +28,7 @@ def main():
     seed = raw_cfg["simulation"]["seed"]
     set_global_seed(seed)
 
-    mode = "kappa_only"
+    mode = "baseline"
     L = 18
 
     base = run_dir(experiment, seed, mode)
@@ -64,6 +64,7 @@ def main():
     joblib.dump(scaler, model_dir / f"scaler_L{L}.pkl")
     ae.save(model_dir / f"ae_L{L}.keras")
     ae.encoder.save(model_dir / f"encoder_L{L}.keras")
+    ae.decoder.save(model_dir/ f"decoder_L{L}.keras")
 
     pd.DataFrame(history.history).to_csv(model_dir / f"history_L{L}.csv", index=False)
 

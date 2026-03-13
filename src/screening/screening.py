@@ -81,3 +81,56 @@ def compute_structural_intensity(params_df: pd.DataFrame) -> pd.DataFrame:
     )
 
     return out[["market_id", "structural_intensity"]]
+
+
+def count_episodes(mask):
+    mask = pd.Series(mask).astype(bool)
+    return ((mask) & (~mask.shift(fill_value=False))).sum()
+
+def compute_market_metrics_real(df, tau95, tau99, recon_tau95, recon_tau99, market_col="Name", time_col=None):
+    rows = []
+
+    grouped = df.groupby(market_col)
+    for market, g in grouped:
+        if time_col is not None:
+            g = g.sort_values(time_col).copy()
+        else:
+            g = g.copy()
+
+        score = g["conduct_score_centered"]
+        recon = g["recon_error"]
+
+        score95 = score > tau95
+        score99 = score > tau99
+        recon95 = recon > recon_tau95
+        recon99 = recon > recon_tau99
+
+        rows.append({
+            "market_id": market,
+            "n_windows": len(g),
+
+            "mean_score": score.mean(),
+            "median_score": score.median(),
+            "sd_score": score.std(ddof=0),
+            "max_score": score.max(),
+
+            "pct_score95": score95.mean(),
+            "pct_score99": score99.mean(),
+            "longest_run_score95": longest_run(score95),
+            "longest_run_score99": longest_run(score99),
+            "episodes_score95": count_episodes(score95),
+            "episodes_score99": count_episodes(score99),
+
+            "mean_recon": recon.mean(),
+            "median_recon": recon.median(),
+            "max_recon": recon.max(),
+            "pct_recon95": recon95.mean(),
+            "pct_recon99": recon99.mean(),
+
+            "pct_score95_in_manifold": (score95 & ~recon95).mean(),
+            "pct_score95_out_manifold": (score95 & recon95).mean(),
+            "pct_score99_in_manifold": (score99 & ~recon99).mean(),
+            "pct_score99_out_manifold": (score99 & recon99).mean(),
+        })
+
+    return pd.DataFrame(rows)
